@@ -1,6 +1,7 @@
 package com.survivalcoding.noteapp.data.dao
 
 import androidx.room.*
+import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
 import com.survivalcoding.noteapp.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
@@ -15,12 +16,12 @@ interface NoteDao {
             CASE :orderKey WHEN 'time_asc' THEN time END ASC,
             CASE :orderKey WHEN 'time_desc' THEN time END DESC
     """)
-    fun getNotes(orderKey: String) : Flow<List<Note>>
+    fun getNotes(orderKey: String = ORDER_KEY_TITLE_ASC) : Flow<List<Note>>
 
     @Insert
-    fun insertNote(note : Note)
+    suspend fun insertNote(note : Note)
     @Update
-    fun updateNote(note : Note)
+    suspend fun updateNote(note : Note)
     @Delete
-    fun deleteNote(note : Note)
+    suspend fun deleteNote(note : Note)
 }
