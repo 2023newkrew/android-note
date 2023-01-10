@@ -8,7 +8,7 @@ import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TIME_ASC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TIME_DESC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_DESC
-import com.survivalcoding.noteapp.data.database.NoteDatabase
+import com.survivalcoding.noteapp.data.data_source.database.NoteDatabase
 import com.survivalcoding.noteapp.domain.model.Note
 import kotlinx.coroutines.*
 import org.junit.Assert.*

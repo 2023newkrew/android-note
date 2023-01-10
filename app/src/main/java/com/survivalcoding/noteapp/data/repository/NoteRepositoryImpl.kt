@@ -5,7 +5,7 @@ import androidx.annotation.WorkerThread
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.survivalcoding.noteapp.Config.Companion.TABLE_NAME
-import com.survivalcoding.noteapp.data.database.NoteDatabase
+import com.survivalcoding.noteapp.data.data_source.database.NoteDatabase
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRespository
 import kotlinx.coroutines.flow.Flow

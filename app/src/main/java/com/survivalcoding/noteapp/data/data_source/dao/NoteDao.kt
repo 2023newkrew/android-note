@@ -1,4 +1,4 @@
-package com.survivalcoding.noteapp.data.dao
+package com.survivalcoding.noteapp.data.data_source.dao
 
 import androidx.room.*
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
