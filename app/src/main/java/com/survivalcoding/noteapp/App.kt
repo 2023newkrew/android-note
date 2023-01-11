@@ -10,9 +10,13 @@ import com.survivalcoding.noteapp.data.repository.NoteRepositoryImpl
 import com.survivalcoding.noteapp.domain.use_case.*
 
 class App : Application() {
-    val noteDatabase by lazy {
-        Room.databaseBuilder(
-            ApplicationProvider.getApplicationContext() as Context,
+    lateinit var noteDatabase: NoteDatabase
+
+    override fun onCreate() {
+        super.onCreate()
+
+        noteDatabase = Room.databaseBuilder(
+            applicationContext,
             NoteDatabase::class.java,
             TABLE_NAME
         ).build()

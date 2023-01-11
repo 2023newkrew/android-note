@@ -20,5 +20,9 @@ class Config {
         const val ORDER_KEY_COLOR_DESC = "color_desc"
         const val ORDER_KEY_TIME_ASC = "time_asc"
         const val ORDER_KEY_TIME_DESC = "time_desc"
+
+        // fragmentCode
+        const val FRAGMENT_CODE_MAIN = 0
+        const val FRAGMENT_CODE_EDIT = 1
     }
 }
