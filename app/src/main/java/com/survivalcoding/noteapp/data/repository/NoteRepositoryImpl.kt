@@ -5,23 +5,15 @@ import androidx.annotation.WorkerThread
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.survivalcoding.noteapp.Config.Companion.TABLE_NAME
+import com.survivalcoding.noteapp.data.data_source.dao.NoteDao
 import com.survivalcoding.noteapp.data.data_source.database.NoteDatabase
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
 
-class NoteRepositoryImpl : NoteRepository {
-    private val noteDatabase
-        get() = Room.databaseBuilder(
-            ApplicationProvider.getApplicationContext() as Context,
-            NoteDatabase::class.java,
-            TABLE_NAME
-        ).build()
-
-    private val noteDao = noteDatabase.noteDao()
-
+class NoteRepositoryImpl(private val noteDao: NoteDao) : NoteRepository {
     @WorkerThread
-    override suspend fun getNotes(orderKey: String): Flow<List<Note>> {
+    override fun getNotes(orderKey: String): Flow<List<Note>> {
         return noteDao.getNotes(orderKey)
     }
 

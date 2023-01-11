@@ -5,9 +5,5 @@ import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import java.io.IOException
 
 class InsertNoteUseCase(private val repository: NoteRepository) {
-    suspend operator fun invoke(note: Note) = try {
-        repository.insertNote(note)
-    } catch (e: IOException) {
-        throw IOException(e)
-    }
+    suspend operator fun invoke(note: Note) = repository.insertNote(note)
 }

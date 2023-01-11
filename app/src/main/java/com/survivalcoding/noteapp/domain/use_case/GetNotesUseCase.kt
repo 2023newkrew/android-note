@@ -6,11 +6,5 @@ import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 
 class GetNotesUseCase(private val repository: NoteRepository) {
-    suspend operator fun invoke(orderKey: String): Flow<List<Note>> {
-        return try {
-            repository.getNotes(orderKey)
-        } catch (e: IOException) {
-            throw IOException(e)
-        }
-    }
+    operator fun invoke(orderKey: String): Flow<List<Note>> = repository.getNotes(orderKey)
 }
