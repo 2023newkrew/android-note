@@ -7,10 +7,10 @@ import androidx.test.core.app.ApplicationProvider
 import com.survivalcoding.noteapp.Config.Companion.TABLE_NAME
 import com.survivalcoding.noteapp.data.data_source.database.NoteDatabase
 import com.survivalcoding.noteapp.domain.model.Note
-import com.survivalcoding.noteapp.domain.repository.NoteRespository
+import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
 
-class NoteRepositoryImpl : NoteRespository {
+class NoteRepositoryImpl : NoteRepository {
     private val noteDatabase
         get() = Room.databaseBuilder(
             ApplicationProvider.getApplicationContext() as Context,
