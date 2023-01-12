@@ -1,17 +1,16 @@
 package com.survivalcoding.noteapp.presentation
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_MAIN
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ActivityMainBinding
-import com.survivalcoding.noteapp.presentation.fragment.EditFragment
-import com.survivalcoding.noteapp.presentation.fragment.MainFragment
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -21,29 +20,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_container, MainFragment())
-        fragmentTransaction.commit()
+        setupMenu()
 
+        binding.addFab.setOnClickListener {
+            val intent = Intent(this, DetailActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { state ->
-                    val transaction = supportFragmentManager.beginTransaction()
-                    if (state.fragmentCode == FRAGMENT_CODE_MAIN) {
-                        binding.fab.setImageResource(R.drawable.ic_add)
-                    } else {
-                        transaction.replace(R.id.fragment_container, EditFragment())
-                        transaction.addToBackStack(null)
-                        binding.fab.setImageResource(R.drawable.ic_save)
-                    }
-                    transaction.commit()
-                }
+    private fun setupMenu() {
+        binding.toolbar.addMenuProvider(object : MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+
             }
-        }
 
-        binding.fab.setOnClickListener {
-            viewModel.changeFragmentCode()
-        }
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_main, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.sort -> {
+                        // TODO
+                    }
+                }
+                return true
+            }
+        }, this, Lifecycle.State.STARTED)
     }
 }
