@@ -15,7 +15,7 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ItemNoteBinding
 import com.survivalcoding.noteapp.domain.model.Note
 
-class NoteListAdapter(val onNoteDelete: (Int) -> Unit) : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
+class NoteListAdapter(private val onNoteDelete: (Int) -> Unit) : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Note>() {
             override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
@@ -28,11 +28,17 @@ class NoteListAdapter(val onNoteDelete: (Int) -> Unit) : ListAdapter<Note, NoteL
         }
     }
 
-    class ViewHolder(val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val onNoteDelete: (Int) -> Unit, val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.deleteImageView.setOnClickListener {
+                onNoteDelete(adapterPosition)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
-        return ViewHolder(ItemNoteBinding.bind(view))
+        return ViewHolder(onNoteDelete, ItemNoteBinding.bind(view))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -52,10 +58,6 @@ class NoteListAdapter(val onNoteDelete: (Int) -> Unit) : ListAdapter<Note, NoteL
                     else -> R.color.note_red
                 }
             )
-
-        holder.binding.deleteImageView.setOnClickListener{
-            onNoteDelete(holder.adapterPosition)
-        }
     }
 
     override fun getItemCount() = currentList.size
