@@ -1,8 +1,6 @@
 package com.survivalcoding.noteapp.data.data_source
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.survivalcoding.noteapp.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
@@ -10,13 +8,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM NOTE WHERE id = :id")
-    suspend fun getNote(id: Int): Note
+    suspend fun getNote(id: Int): Note?
 
     @Insert
     suspend fun addNote(note: Note)
 
-    @Query("DELETE FROM NOTE WHERE id = :id")
-    suspend fun deleteNote(id: Int)
+    @Update
+    suspend fun updateNote(note: Note): Int
+
+    @Delete
+    suspend fun deleteNote(note: Note): Int
 
     @Query("SELECT * FROM NOTE")
     fun getNotes(): Flow<List<Note>>

@@ -8,16 +8,14 @@ class UpdateNoteUseCase(
     private val noteRepository: NoteRepository
 ) {
     suspend operator fun invoke(
-        id: Int,
-        title: String,
-        body: String,
-        color: Int,
-        date: Long
-    ): QueryResult {
+        note: Note
+    ): QueryResult<String> {
         return try {
-            noteRepository.deleteNote(id)
-            noteRepository.addNote(Note(title, body, color, date))
-            QueryResult.Success("Note 변경 성공")
+            val count = noteRepository.updateNote(note)
+            if (count == 1)
+                QueryResult.Success("Note 변경 성공")
+            else
+                QueryResult.Fail("존재 하지 않는 Note 입니다")
         } catch (e: Exception) {
             QueryResult.Fail(e.message.toString())
         }
