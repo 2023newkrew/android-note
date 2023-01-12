@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_EDIT
 import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_MAIN
-import com.survivalcoding.noteapp.domain.use_case.NoteUseCaseBundle
+import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 

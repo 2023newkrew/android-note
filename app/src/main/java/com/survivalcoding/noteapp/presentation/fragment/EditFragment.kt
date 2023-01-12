@@ -11,7 +11,6 @@ import androidx.fragment.app.activityViewModels
 import com.survivalcoding.noteapp.databinding.FragmentEditBinding
 import com.survivalcoding.noteapp.presentation.MainViewModel
 
-
 class EditFragment : Fragment() {
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!

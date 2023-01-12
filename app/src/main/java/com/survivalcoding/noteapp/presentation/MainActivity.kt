@@ -1,8 +1,6 @@
 package com.survivalcoding.noteapp.presentation
 
-import android.content.Context
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -14,7 +12,6 @@ import com.survivalcoding.noteapp.databinding.ActivityMainBinding
 import com.survivalcoding.noteapp.presentation.fragment.EditFragment
 import com.survivalcoding.noteapp.presentation.fragment.MainFragment
 import kotlinx.coroutines.launch
-
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }

@@ -2,8 +2,6 @@ package com.survivalcoding.noteapp.presentation.fragment
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
-import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -11,7 +9,6 @@ import androidx.lifecycle.Lifecycle
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentMainBinding
 import com.survivalcoding.noteapp.presentation.MainViewModel
-
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null

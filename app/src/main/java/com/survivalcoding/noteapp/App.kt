@@ -1,13 +1,12 @@
 package com.survivalcoding.noteapp
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import com.survivalcoding.noteapp.Config.Companion.TABLE_NAME
 import com.survivalcoding.noteapp.data.data_source.database.NoteDatabase
 import com.survivalcoding.noteapp.data.repository.NoteRepositoryImpl
 import com.survivalcoding.noteapp.domain.use_case.*
+import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
 
 class App : Application() {
     lateinit var noteDatabase: NoteDatabase
