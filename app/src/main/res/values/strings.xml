@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">NoteApp</string>
+    
+    <string name="description_fab">Button</string>
+
+    <string name="tag_fragment">Fragment Tag</string>
+
+    <string name="sort">Sort</string>
 </resources>

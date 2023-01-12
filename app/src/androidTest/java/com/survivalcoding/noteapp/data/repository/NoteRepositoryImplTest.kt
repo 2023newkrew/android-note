@@ -11,14 +11,16 @@ import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_DESC
 import com.survivalcoding.noteapp.data.data_source.database.NoteDatabase
 import com.survivalcoding.noteapp.domain.model.Note
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NoteRepositoryImplTest {
-
     private val noteDatabase = Room.inMemoryDatabaseBuilder(
         ApplicationProvider.getApplicationContext(),
         NoteDatabase::class.java
@@ -26,7 +28,7 @@ class NoteRepositoryImplTest {
     private val noteDao = noteDatabase.noteDao()
 
     @Before
-    fun setUp() = runBlocking {
+    fun setUp() = runTest {
         for (i in 0..4) {
             noteDao.insertNote(
                 Note(
@@ -36,6 +38,7 @@ class NoteRepositoryImplTest {
                     colorCode = i
                 )
             )
+            delay(1000)
         }
     }
 
@@ -44,81 +47,60 @@ class NoteRepositoryImplTest {
     }
 
     @Test
-    fun getNotes() {
-        CoroutineScope(Dispatchers.IO).launch {
-            noteDao.getNotes(ORDER_KEY_TITLE_ASC)
-                .collect {
-                    assertEquals("0 Note", it[0].title)
-                }
-            noteDao.getNotes(ORDER_KEY_TITLE_DESC)
-                .collect {
-                    assertEquals("4 Note", it[0].title)
-                }
-            noteDao.getNotes(ORDER_KEY_COLOR_ASC)
-                .collect {
-                    assertTrue(it[0].colorCode < it[1].colorCode)
-                }
-            noteDao.getNotes(ORDER_KEY_COLOR_DESC)
-                .collect {
-                    assertTrue(it[0].colorCode > it[1].colorCode)
-                }
-            noteDao.getNotes(ORDER_KEY_TIME_ASC)
-                .collect {
-                    assertTrue(it[0].time < it[1].time)
-                }
-            noteDao.getNotes(ORDER_KEY_TIME_DESC)
-                .collect {
-                    assertTrue(it[0].time > it[1].time)
-                }
-        }
+    fun getNotes() = runTest {
+        var notes: List<Note> = noteDao.getNotes(ORDER_KEY_TITLE_ASC).first()
+        assertEquals("0 Note", notes[0].title)
+
+        notes = noteDao.getNotes(ORDER_KEY_TITLE_DESC).first()
+        assertEquals("4 Note", notes[0].title)
+
+        notes = noteDao.getNotes(ORDER_KEY_COLOR_ASC).first()
+        assertTrue(notes[0].colorCode < notes[1].colorCode)
+
+        notes = noteDao.getNotes(ORDER_KEY_COLOR_DESC).first()
+        assertTrue(notes[0].colorCode > notes[1].colorCode)
+
+        notes = noteDao.getNotes(ORDER_KEY_TIME_ASC).first()
+        assertTrue(notes[0].time < notes[1].time)
+
+        notes = noteDao.getNotes(ORDER_KEY_TIME_DESC).first()
+        assertTrue(notes[0].time > notes[1].time)
     }
 
-
     @Test
-    fun insertNote() {
-        CoroutineScope(Dispatchers.IO).launch {
-            var count = 0
-            noteDao.getNotes(ORDER_KEY_TITLE_ASC).collect {
-                count = it.size
-            }
-            noteDao.insertNote(
-                Note(
-                    title = "5 Note",
-                    content = "5 5 5 5 5 ",
-                    time = System.currentTimeMillis(),
-                    colorCode = 5
-                )
+    fun insertNote() = runTest {
+        var notes: List<Note> = noteDao.getNotes(ORDER_KEY_TITLE_ASC).first()
+        val prevSize = notes.size
+        noteDao.insertNote(
+            Note(
+                title = "5 Note",
+                content = "5 5 5 5 5 ",
+                time = System.currentTimeMillis(),
+                colorCode = 5
             )
-            noteDao.getNotes(ORDER_KEY_TITLE_ASC).collect {
-                assertEquals(count + 1, it.size)
-            }
-        }
+        )
+        notes = noteDao.getNotes(ORDER_KEY_TITLE_ASC).first()
+        assertEquals(prevSize + 1, notes.size)
     }
 
     @Test
-    fun deleteNote() {
-        CoroutineScope(Dispatchers.IO).launch {
-            var count = 0
-            noteDao.getNotes(ORDER_KEY_TITLE_ASC).collect {
-                count = it.size
-                noteDao.deleteNote(it[0])
-            }
-            noteDao.getNotes(ORDER_KEY_TITLE_ASC).collect {
-                assertEquals(count - 1, it.size)
-            }
-        }
+    fun deleteNote() = runTest {
+        var notes: List<Note> = noteDao.getNotes(ORDER_KEY_TITLE_ASC).first()
+        val prevSize = notes.size
+        noteDao.deleteNote(notes[0])
+        notes = noteDao.getNotes(ORDER_KEY_TITLE_ASC).first()
+        assertEquals(prevSize - 1, notes.size)
     }
 
     @Test
-    fun updateNote() {
-        CoroutineScope(Dispatchers.IO).launch {
-            noteDao.getNotes(ORDER_KEY_TITLE_ASC).collect {
-                it[0].title = "Good"
-                noteDao.updateNote(it[0])
-            }
-            noteDao.getNotes(ORDER_KEY_TITLE_ASC).collect {
-                assertEquals("Good", it[0].title)
-            }
-        }
+    fun updateNote() = runTest {
+        var notes: List<Note> = noteDao.getNotes(ORDER_KEY_TITLE_ASC).first()
+        val firstNote = notes.first().copy(
+            title = "Good"
+        )
+        val prevId = firstNote.id
+        noteDao.updateNote(firstNote)
+        notes = noteDao.getNotes(ORDER_KEY_TITLE_ASC).first()
+        assertEquals("Good", notes.first { it.id == prevId }.title)
     }
 }
