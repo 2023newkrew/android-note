@@ -15,7 +15,7 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ItemNoteBinding
 import com.survivalcoding.noteapp.domain.model.Note
 
-class NoteListAdapter : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
+class NoteListAdapter(val onNoteDelete: (Note) -> Unit) : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Note>() {
             override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
@@ -52,6 +52,12 @@ class NoteListAdapter : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) 
                     else -> R.color.note_red
                 }
             )
+
+        holder.binding.deleteImageView.setOnClickListener{
+            println("[Before] listAdapter Size: $itemCount")
+            onNoteDelete(currentList[position])
+            println("[After] listAdapter Size: $itemCount")
+        }
     }
 
     override fun getItemCount() = currentList.size
