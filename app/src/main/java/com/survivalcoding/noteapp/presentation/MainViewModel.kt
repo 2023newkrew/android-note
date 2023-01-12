@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.room.Query
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_EDIT
 import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_MAIN
+import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
 import kotlinx.coroutines.flow.*
@@ -27,8 +29,10 @@ class MainViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
         }
     }
 
-    private val _state = MutableStateFlow(MainState(noteUseCaseBundle.getNotesUseCase()))
-    val state = _state.asStateFlow()
+//    private val _state = MutableStateFlow(MainState(noteUseCaseBundle.getNotesUseCase()))
+//    val state = _state.asStateFlow()
+
+    fun getNotes(orderKey: String = ORDER_KEY_TITLE_ASC): Flow<List<Note>> = noteUseCaseBundle.getNotesUseCase(orderKey)
 
     fun addTest(){
         viewModelScope.launch {
@@ -38,22 +42,13 @@ class MainViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
                 colorCode = 2,
                 time= 133223
             ))
-            notifyState()
         }
 
     }
     fun deleteNote(note:Note) {
         viewModelScope.launch {
             noteUseCaseBundle.deleteNotesUseCase(note)
-            notifyState()
         }
-    }
-    private suspend fun notifyState() {
-        val noteList = noteUseCaseBundle.getNotesUseCase()
-        println(noteList.first().size)
-        _state.value = state.value.copy(
-            noteList = noteList
-        )
     }
 }
 

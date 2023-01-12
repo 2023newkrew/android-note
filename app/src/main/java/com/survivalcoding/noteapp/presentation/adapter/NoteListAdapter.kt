@@ -54,9 +54,10 @@ class NoteListAdapter(val onNoteDelete: (Note) -> Unit) : ListAdapter<Note, Note
             )
 
         holder.binding.deleteImageView.setOnClickListener{
-            println("[Before] listAdapter Size: $itemCount")
-            onNoteDelete(currentList[position])
-            println("[After] listAdapter Size: $itemCount")
+            val note = currentList[position]
+//            currentList.removeAt(position)
+            //notifyItemRemoved(position)
+            onNoteDelete(note)
         }
     }
 

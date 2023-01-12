@@ -40,12 +40,17 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = noteListAdapter
 
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                viewModel.state.collect { state ->
+//                    // flow list를 flow로 감싸서 아래에서 first를 쓰는데 더 좋은 방법 없을까?
+//                    noteListAdapter.submitList(state.noteList.first())
+//                }
+//            }
+//        }
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { state ->
-                    // flow list를 flow로 감싸서 아래에서 first를 쓰는데 더 좋은 방법 없을까?
-                    noteListAdapter.submitList(state.noteList.first())
-                }
+            viewModel.getNotes().collect {
+                noteListAdapter.submitList(it)
             }
         }
 
