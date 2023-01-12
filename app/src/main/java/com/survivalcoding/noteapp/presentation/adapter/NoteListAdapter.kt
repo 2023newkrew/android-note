@@ -15,7 +15,7 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ItemNoteBinding
 import com.survivalcoding.noteapp.domain.model.Note
 
-class NoteListAdapter(val onNoteDelete: (Note) -> Unit) : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
+class NoteListAdapter(val onNoteDelete: (Int) -> Unit) : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Note>() {
             override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
@@ -54,10 +54,7 @@ class NoteListAdapter(val onNoteDelete: (Note) -> Unit) : ListAdapter<Note, Note
             )
 
         holder.binding.deleteImageView.setOnClickListener{
-            val note = currentList[position]
-//            currentList.removeAt(position)
-            //notifyItemRemoved(position)
-            onNoteDelete(note)
+            onNoteDelete(holder.adapterPosition)
         }
     }
 

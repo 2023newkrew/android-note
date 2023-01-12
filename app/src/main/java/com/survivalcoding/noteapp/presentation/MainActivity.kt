@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
+    private lateinit var noteListAdapter: NoteListAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupMenu()
 
-        val noteListAdapter = NoteListAdapter { note ->
-            viewModel.deleteNote(note)
+        noteListAdapter = NoteListAdapter { position ->
+            onItemRemoveClick(position)
         }
         val recyclerView = binding.noteRecyclerView
         recyclerView.setHasFixedSize(true)
@@ -59,6 +60,12 @@ class MainActivity : AppCompatActivity() {
 //            val intent = Intent(this, DetailActivity::class.java)
 //            startActivity(intent)
         }
+
+    }
+    fun onItemRemoveClick(position: Int) {
+        val currentList = noteListAdapter.currentList.toMutableList()
+        val note = currentList[position]
+        viewModel.deleteNote(note)
     }
 
     private fun setupMenu() {
