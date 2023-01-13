@@ -29,8 +29,8 @@
 
         <activity
             android:name=".presentation.DetailActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

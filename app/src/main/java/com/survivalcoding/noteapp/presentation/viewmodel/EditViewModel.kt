@@ -3,10 +3,13 @@ package com.survivalcoding.noteapp.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.survivalcoding.noteapp.App
+import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class EditViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewModel() {
     companion object {
@@ -21,5 +24,23 @@ class EditViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
             }
         }
     }
+
+    private val _state = MutableStateFlow(EditState())
+    val state = _state.asStateFlow()
+
+    fun changeColor(colorCode: Int) {
+        _state.value = state.value.copy(
+            colorCode = colorCode
+        )
+    }
+
+    fun updateNote(note: Note) {
+        viewModelScope.launch {
+            noteUseCaseBundle.updateNotesUseCase(note)
+        }
+    }
 }
 
+data class EditState(
+    val colorCode: Int = 0
+)

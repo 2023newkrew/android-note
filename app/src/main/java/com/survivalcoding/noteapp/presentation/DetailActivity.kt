@@ -22,7 +22,6 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.add(
             R.id.detail_fragment_container,
