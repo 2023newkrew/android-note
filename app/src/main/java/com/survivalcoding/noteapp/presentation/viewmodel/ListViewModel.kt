@@ -34,4 +34,3 @@ class ListViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
         }
     }
 }
-
