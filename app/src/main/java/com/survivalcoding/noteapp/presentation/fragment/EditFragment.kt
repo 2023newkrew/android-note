@@ -31,11 +31,6 @@ class EditFragment(val note: Note) : Fragment() {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // restore
-        binding.includeEditor.titleEditText.setText(note.title)
-        binding.includeEditor.contentEditText.setText(note.content)
-        selectColorButton(note.colorCode)
-
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
@@ -64,15 +59,35 @@ class EditFragment(val note: Note) : Fragment() {
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // restore
+        binding.includeEditor.titleEditText.setText(note.title)
+        binding.includeEditor.contentEditText.setText(note.content)
+        viewModel.changeColor(note.colorCode)
+    }
+
     private fun selectColorButton(colorCode: Int) {
         when (colorCode) {
             Config.COLOR_CODE_RED -> {
-                binding.includeEditor.layoutEditor.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.note_red))
-                requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.note_red)
-                requireActivity().window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.note_red)
+                binding.includeEditor.layoutEditor.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.note_red
+                    )
+                )
+                requireActivity().window.statusBarColor =
+                    ContextCompat.getColor(requireContext(), R.color.note_red)
+                requireActivity().window.navigationBarColor =
+                    ContextCompat.getColor(requireContext(), R.color.note_red)
             }
             Config.COLOR_CODE_YELLOW -> {
-                binding.includeEditor.layoutEditor.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.note_yellow))
+                binding.includeEditor.layoutEditor.setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.note_yellow
+                    )
+                )
                 requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.note_yellow)
                 requireActivity().window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.note_yellow)
             }
