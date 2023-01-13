@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent">
+    android:id="@+id/layout_editor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/note_red"
+    android:padding="@dimen/margin_default">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_color_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -15,16 +19,16 @@
             android:id="@+id/color_button_red"
             android:layout_width="@dimen/color_button_size_default"
             android:layout_height="@dimen/color_button_size_default"
-            android:layout_margin="@dimen/margin_default"
+            android:layout_margin="@dimen/margin_small"
             android:background="@drawable/drawable_circle"
             android:backgroundTint="@color/note_red"
-            tools:src="@drawable/drawable_circle_border" />
+            android:src="@drawable/drawable_circle_border" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/color_button_yellow"
             android:layout_width="@dimen/color_button_size_default"
             android:layout_height="@dimen/color_button_size_default"
-            android:layout_margin="@dimen/margin_default"
+            android:layout_margin="@dimen/margin_small"
             android:background="@drawable/drawable_circle"
             android:backgroundTint="@color/note_yellow"
             tools:src="@drawable/drawable_circle_border" />
@@ -33,7 +37,7 @@
             android:id="@+id/color_button_purple"
             android:layout_width="@dimen/color_button_size_default"
             android:layout_height="@dimen/color_button_size_default"
-            android:layout_margin="@dimen/margin_default"
+            android:layout_margin="@dimen/margin_small"
             android:background="@drawable/drawable_circle"
             android:backgroundTint="@color/note_purple"
             tools:src="@drawable/drawable_circle_border" />
@@ -42,7 +46,7 @@
             android:id="@+id/color_button_blue"
             android:layout_width="@dimen/color_button_size_default"
             android:layout_height="@dimen/color_button_size_default"
-            android:layout_margin="@dimen/margin_default"
+            android:layout_margin="@dimen/margin_small"
             android:background="@drawable/drawable_circle"
             android:backgroundTint="@color/note_blue"
             tools:src="@drawable/drawable_circle_border" />
@@ -51,12 +55,33 @@
             android:id="@+id/color_button_pink"
             android:layout_width="@dimen/color_button_size_default"
             android:layout_height="@dimen/color_button_size_default"
-            android:layout_margin="@dimen/margin_default"
+            android:layout_margin="@dimen/margin_small"
             android:background="@drawable/drawable_circle"
             android:backgroundTint="@color/note_pink"
             tools:src="@drawable/drawable_circle_border" />
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <EditText
+        android:id="@+id/title_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="@string/hint_title"
+        app:layout_constraintTop_toBottomOf="@id/layout_color_button" />
+
+    <EditText
+        android:id="@+id/content_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="@string/hint_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_edit_text"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="16dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

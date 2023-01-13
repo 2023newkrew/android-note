@@ -21,5 +21,12 @@ class AddViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewModel
             }
         }
     }
+
+    val state = MutableStateFlow(AddState())
+    private val _state = state.asStateFlow()
 }
+
+data class AddState(
+    val colorCode: Int = 0
+)
 
