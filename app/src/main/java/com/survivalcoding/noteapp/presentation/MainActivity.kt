@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_FRAGMENT
+import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_ADD
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ActivityMainBinding
 import com.survivalcoding.noteapp.presentation.fragment.ListFragment
@@ -21,7 +23,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.addFab.setOnClickListener {
             //viewModel.addTest()
-            val intent = Intent(this, DetailActivity::class.java)
+            val intent = Intent(this, DetailActivity::class.java).apply {
+                putExtra(EXTRA_KEY_FRAGMENT, FRAGMENT_CODE_ADD)
+            }
             startActivity(intent)
         }
     }

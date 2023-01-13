@@ -21,6 +21,10 @@ class Config {
         const val ORDER_KEY_TIME_ASC = "time_asc"
         const val ORDER_KEY_TIME_DESC = "time_desc"
 
+        // EXTRA
+        const val EXTRA_KEY_FRAGMENT = "intent_key_fragment"
+        const val EXTRA_KEY_NOTE = "extra_key_note"
+
         // fragmentCode
         const val FRAGMENT_CODE_ADD = 0
         const val FRAGMENT_CODE_EDIT = 1
