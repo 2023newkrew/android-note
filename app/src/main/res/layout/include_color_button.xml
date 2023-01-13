@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.appcompat.widget.AppCompatImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/color_button_size_default"
+    android:layout_height="@dimen/color_button_size_default"
+    android:layout_margin="@dimen/margin_default"
+    android:background="@drawable/drawable_circle"
+    android:backgroundTint="@color/note_red"
+    tools:src="@drawable/drawable_circle_border"
+
+    />

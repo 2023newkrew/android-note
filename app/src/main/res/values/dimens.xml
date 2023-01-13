@@ -6,4 +6,8 @@
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_default">16dp</dimen>
     <dimen name="margin_large">32dp</dimen>
+
+    <dimen name="color_button_size_default">50dp</dimen>
+
+
 </resources>
