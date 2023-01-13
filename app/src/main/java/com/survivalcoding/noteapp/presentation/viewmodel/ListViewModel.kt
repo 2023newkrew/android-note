@@ -44,21 +44,32 @@ class ListViewModel(
     private val _state = MutableStateFlow(ListState())
     val state = _state.asStateFlow()
 
-    fun getNotes(orderKey: String = ORDER_KEY_TITLE_ASC): Flow<List<Note>> = noteUseCaseBundle.getNotesUseCase(orderKey)
+    init {
+        val prefs = application.getSharedPreferences(PREFS, MODE_PRIVATE)
+        val orderKey = prefs.getString(PREFS_KEY_ORDER, ORDER_KEY_TITLE_ASC)
+        val orderPair = convertOrderKeyToOrderPair(orderKey ?: ORDER_KEY_TITLE_ASC)
+        _state.value = state.value.copy(
+            orderCode = orderPair.first,
+            isReversed = orderPair.second
+        )
+    }
+
+    fun getNotes(orderKey: String = ORDER_KEY_TITLE_ASC): Flow<List<Note>> =
+        noteUseCaseBundle.getNotesUseCase(orderKey)
 
     fun insertNode(note: Note) = viewModelScope.launch { noteUseCaseBundle.insertNoteUseCase(note) }
 
-    fun deleteNote(note: Note) = viewModelScope.launch { noteUseCaseBundle.deleteNotesUseCase(note) }
+    fun deleteNote(note: Note) =
+        viewModelScope.launch { noteUseCaseBundle.deleteNotesUseCase(note) }
 
     fun changeOrder(orderCode: Int, isReversed: Boolean) {
         val editor = application.getSharedPreferences(PREFS, MODE_PRIVATE).edit()
-        editor.putString(PREFS_KEY_ORDER, orderKey)
+        editor.putString(PREFS_KEY_ORDER, convertOrderCodeToKey(orderCode, isReversed))
         editor.apply()
 
         _state.value = state.value.copy(
             orderCode = orderCode,
             isReversed = isReversed,
-            orderKey = orderKey
         )
     }
 
@@ -79,11 +90,19 @@ class ListViewModel(
             }
         }
 
-    fun convertOrderKeyToCode()
+    fun convertOrderKeyToOrderPair(orderKey: String): Pair<Int, Boolean> =
+        when (orderKey) {
+            ORDER_KEY_TITLE_ASC -> Pair(ORDER_CODE_TITLE, false)
+            ORDER_KEY_TITLE_DESC -> Pair(ORDER_CODE_TITLE, true)
+            ORDER_KEY_COLOR_ASC -> Pair(ORDER_CODE_COLOR, false)
+            ORDER_KEY_COLOR_DESC -> Pair(ORDER_CODE_COLOR, true)
+            ORDER_KEY_TIME_ASC -> Pair(ORDER_CODE_DATE, false)
+            ORDER_KEY_TIME_DESC -> Pair(ORDER_CODE_DATE, true)
+            else -> Pair(ORDER_CODE_TITLE, false)
+        }
 }
 
 data class ListState(
     val orderCode: Int = ORDER_CODE_TITLE,
     val isReversed: Boolean = false,
-    val orderKey: String = ORDER_KEY_TITLE_ASC
 )

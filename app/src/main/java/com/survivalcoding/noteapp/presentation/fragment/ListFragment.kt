@@ -53,28 +53,66 @@ class ListFragment : Fragment() {
         recyclerView.adapter = noteListAdapter
 
         lifecycleScope.launch{
-            viewModel.getNotes(viewModel.state.value.orderKey).collect(noteListAdapter::submitList)
+            val orderCode = viewModel.convertOrderCodeToKey(
+                viewModel.state.value.orderCode,
+                viewModel.state.value.isReversed
+            )
+            viewModel.getNotes(orderCode).collect(noteListAdapter::submitList)
         }
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
-                    noteListAdapter.submitList(viewModel.getNotes(state.orderKey).first())
+                    val orderCode = viewModel.convertOrderCodeToKey(
+                        state.orderCode,
+                        state.isReversed
+                    )
+                    noteListAdapter.submitList(viewModel.getNotes(orderCode).first())
                 }
             }
         }
 
-        binding.radioGroupSort1.setOnCheckedChangeListener { _, checkedId ->
+        binding.radioGroupOrderKey.check(
+            when (viewModel.state.value.orderCode) {
+                ORDER_CODE_TITLE -> R.id.radio_title
+                ORDER_CODE_DATE -> R.id.radio_date
+                ORDER_CODE_COLOR -> R.id.radio_color
+                else -> R.id.radio_title
+            }
+        )
+        binding.radioGroupOrderReverse.check(
+            when (viewModel.state.value.isReversed) {
+                true -> R.id.radio_descending
+                false -> R.id.radio_ascending
+            }
+        )
+
+        binding.radioGroupOrderKey.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.radio_title -> viewModel.changeOrder(ORDER_CODE_TITLE, viewModel.state.value.isReversed)
-                R.id.radio_date -> viewModel.changeOrder(ORDER_CODE_DATE, viewModel.state.value.isReversed)
-                R.id.radio_color -> viewModel.changeOrder(ORDER_CODE_COLOR, viewModel.state.value.isReversed)
+                R.id.radio_title -> viewModel.changeOrder(
+                    ORDER_CODE_TITLE,
+                    viewModel.state.value.isReversed
+                )
+                R.id.radio_date -> viewModel.changeOrder(
+                    ORDER_CODE_DATE,
+                    viewModel.state.value.isReversed
+                )
+                R.id.radio_color -> viewModel.changeOrder(
+                    ORDER_CODE_COLOR,
+                    viewModel.state.value.isReversed
+                )
             }
         }
-        binding.radioGroupSort2.setOnCheckedChangeListener { _, checkedId ->
+        binding.radioGroupOrderReverse.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.radio_ascending -> viewModel.changeOrder(viewModel.state.value.orderCode, false)
-                R.id.radio_descending -> viewModel.changeOrder(viewModel.state.value.orderCode, isReversed = true)
+                R.id.radio_ascending -> viewModel.changeOrder(
+                    viewModel.state.value.orderCode,
+                    false
+                )
+                R.id.radio_descending -> viewModel.changeOrder(
+                    viewModel.state.value.orderCode,
+                    isReversed = true
+                )
             }
         }
 

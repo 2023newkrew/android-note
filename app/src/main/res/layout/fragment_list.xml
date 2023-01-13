@@ -25,7 +25,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <RadioGroup
-            android:id="@+id/radio_group_sort_1"
+            android:id="@+id/radio_group_order_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_minus"
@@ -57,7 +57,7 @@
         </RadioGroup>
 
         <RadioGroup
-            android:id="@+id/radio_group_sort_2"
+            android:id="@+id/radio_group_order_reverse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_minus"
