@@ -21,6 +21,10 @@ class Config {
         const val ORDER_KEY_TIME_ASC = "time_asc"
         const val ORDER_KEY_TIME_DESC = "time_desc"
 
+        const val ORDER_CODE_TITLE = 0
+        const val ORDER_CODE_DATE = 1
+        const val ORDER_CODE_COLOR = 2
+
         // EXTRA
         const val EXTRA_KEY_FRAGMENT = "intent_key_fragment"
         const val EXTRA_KEY_NOTE = "extra_key_note"

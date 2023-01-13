@@ -28,16 +28,10 @@ class EditViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
     private val _state = MutableStateFlow(EditState())
     val state = _state.asStateFlow()
 
-    fun changeColor(colorCode: Int) {
-        _state.value = state.value.copy(
-            colorCode = colorCode
-        )
-    }
+    fun updateNote(note: Note) = viewModelScope.launch { noteUseCaseBundle.updateNotesUseCase(note) }
 
-    fun updateNote(note: Note) {
-        viewModelScope.launch {
-            noteUseCaseBundle.updateNotesUseCase(note)
-        }
+    fun changeColor(colorCode: Int) {
+        _state.value = state.value.copy(colorCode = colorCode)
     }
 }
 

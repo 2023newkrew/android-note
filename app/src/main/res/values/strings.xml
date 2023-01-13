@@ -6,7 +6,16 @@
     <string name="tag_fragment">Fragment Tag</string>
 
     <string name="sort">Sort</string>
+    <string name="undo">Undo</string>
+
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="color">Color</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
 
     <string name="hint_title">Enter title…</string>
     <string name="hint_content">Enter Some content</string>
+
+    <string name="message_delete">Note Deleted</string>
 </resources>

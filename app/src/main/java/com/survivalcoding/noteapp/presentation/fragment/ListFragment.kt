@@ -3,15 +3,22 @@ package com.survivalcoding.noteapp.presentation.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_FRAGMENT
 import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_NOTE
 import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_EDIT
+import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_COLOR
+import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_DATE
+import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_TITLE
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentListBinding
 import com.survivalcoding.noteapp.presentation.DetailActivity
@@ -45,7 +52,25 @@ class ListFragment : Fragment() {
         recyclerView.adapter = noteListAdapter
 
         lifecycleScope.launch {
-            viewModel.getNotes().collect(noteListAdapter::submitList)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    viewModel.getNotes(state.orderKey).collect(noteListAdapter::submitList)
+                }
+            }
+        }
+
+        binding.radioGroupSort1.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.radio_title -> viewModel.changeOrder(orderCode = ORDER_CODE_TITLE)
+                R.id.radio_date -> viewModel.changeOrder(orderCode = ORDER_CODE_DATE)
+                R.id.radio_color -> viewModel.changeOrder(orderCode = ORDER_CODE_COLOR)
+            }
+        }
+        binding.radioGroupSort2.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.radio_ascending -> viewModel.changeOrder(isReversed = false)
+                R.id.radio_descending -> viewModel.changeOrder(isReversed = true)
+            }
         }
 
         return root
@@ -62,7 +87,9 @@ class ListFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.sort -> {
-                        // TODO
+                        binding.layoutRadio.visibility =
+                            if (binding.layoutRadio.visibility == VISIBLE) GONE
+                            else VISIBLE
                     }
                 }
                 return true
@@ -74,6 +101,10 @@ class ListFragment : Fragment() {
         val currentList = noteListAdapter.currentList.toMutableList()
         val note = currentList[position]
         viewModel.deleteNote(note)
+
+        val snackBar = Snackbar.make(binding.root, R.string.message_delete, Snackbar.LENGTH_SHORT)
+        snackBar.setAction(R.string.undo) { viewModel.insertNode(note) }
+        snackBar.show()
     }
 
     private fun onItemClick(position: Int) {
