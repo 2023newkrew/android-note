@@ -1,5 +1,7 @@
 package com.survivalcoding.noteapp.presentation.viewmodel
 
+import android.app.Application
+import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -15,12 +17,17 @@ import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TIME_ASC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TIME_DESC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_DESC
+import com.survivalcoding.noteapp.Config.Companion.PREFS
+import com.survivalcoding.noteapp.Config.Companion.PREFS_KEY_ORDER
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ListViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewModel() {
+class ListViewModel(
+    private val application: Application,
+    private val noteUseCaseBundle: NoteUseCaseBundle
+) : ViewModel() {
     companion object {
         val ListViewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -29,7 +36,7 @@ class ListViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
                 extras: CreationExtras
             ): T {
                 val application = checkNotNull(extras[APPLICATION_KEY])
-                return ListViewModel((application as App).noteUseCaseBundle) as T
+                return ListViewModel(application, (application as App).noteUseCaseBundle) as T
             }
         }
     }
@@ -43,23 +50,10 @@ class ListViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
 
     fun deleteNote(note: Note) = viewModelScope.launch { noteUseCaseBundle.deleteNotesUseCase(note) }
 
-    fun changeOrder(orderCode: Int = ORDER_CODE_TITLE, isReversed: Boolean = false) {
-        val orderKey: String =
-            if (isReversed) {
-                when (orderCode) {
-                    ORDER_CODE_TITLE -> ORDER_KEY_TITLE_DESC
-                    ORDER_CODE_DATE -> ORDER_KEY_TIME_DESC
-                    ORDER_CODE_COLOR -> ORDER_KEY_COLOR_DESC
-                    else -> ORDER_KEY_TITLE_DESC
-                }
-            } else {
-                when (orderCode) {
-                    ORDER_CODE_TITLE -> ORDER_KEY_TITLE_ASC
-                    ORDER_CODE_DATE -> ORDER_KEY_TIME_ASC
-                    ORDER_CODE_COLOR -> ORDER_KEY_COLOR_ASC
-                    else -> ORDER_KEY_TITLE_ASC
-                }
-            }
+    fun changeOrder(orderCode: Int, isReversed: Boolean) {
+        val editor = application.getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+        editor.putString(PREFS_KEY_ORDER, orderKey)
+        editor.apply()
 
         _state.value = state.value.copy(
             orderCode = orderCode,
@@ -67,6 +61,25 @@ class ListViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewMode
             orderKey = orderKey
         )
     }
+
+    fun convertOrderCodeToKey(orderCode: Int, isReversed: Boolean): String =
+        if (isReversed) {
+            when (orderCode) {
+                ORDER_CODE_TITLE -> ORDER_KEY_TITLE_DESC
+                ORDER_CODE_DATE -> ORDER_KEY_TIME_DESC
+                ORDER_CODE_COLOR -> ORDER_KEY_COLOR_DESC
+                else -> ORDER_KEY_TITLE_DESC
+            }
+        } else {
+            when (orderCode) {
+                ORDER_CODE_TITLE -> ORDER_KEY_TITLE_ASC
+                ORDER_CODE_DATE -> ORDER_KEY_TIME_ASC
+                ORDER_CODE_COLOR -> ORDER_KEY_COLOR_ASC
+                else -> ORDER_KEY_TITLE_ASC
+            }
+        }
+
+    fun convertOrderKeyToCode()
 }
 
 data class ListState(

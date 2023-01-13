@@ -25,6 +25,7 @@ import com.survivalcoding.noteapp.presentation.DetailActivity
 import com.survivalcoding.noteapp.presentation.adapter.NoteListAdapter
 import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel
 import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel.Companion.ListViewModelFactory
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -51,25 +52,29 @@ class ListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = noteListAdapter
 
+        lifecycleScope.launch{
+            viewModel.getNotes(viewModel.state.value.orderKey).collect(noteListAdapter::submitList)
+        }
+
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
-                    viewModel.getNotes(state.orderKey).collect(noteListAdapter::submitList)
+                    noteListAdapter.submitList(viewModel.getNotes(state.orderKey).first())
                 }
             }
         }
 
         binding.radioGroupSort1.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.radio_title -> viewModel.changeOrder(orderCode = ORDER_CODE_TITLE)
-                R.id.radio_date -> viewModel.changeOrder(orderCode = ORDER_CODE_DATE)
-                R.id.radio_color -> viewModel.changeOrder(orderCode = ORDER_CODE_COLOR)
+                R.id.radio_title -> viewModel.changeOrder(ORDER_CODE_TITLE, viewModel.state.value.isReversed)
+                R.id.radio_date -> viewModel.changeOrder(ORDER_CODE_DATE, viewModel.state.value.isReversed)
+                R.id.radio_color -> viewModel.changeOrder(ORDER_CODE_COLOR, viewModel.state.value.isReversed)
             }
         }
         binding.radioGroupSort2.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.radio_ascending -> viewModel.changeOrder(isReversed = false)
-                R.id.radio_descending -> viewModel.changeOrder(isReversed = true)
+                R.id.radio_ascending -> viewModel.changeOrder(viewModel.state.value.orderCode, false)
+                R.id.radio_descending -> viewModel.changeOrder(viewModel.state.value.orderCode, isReversed = true)
             }
         }
 
