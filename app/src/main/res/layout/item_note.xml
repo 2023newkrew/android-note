@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_large"
-        tools:text="약국 이름" />
+        tools:text="제목" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"

@@ -22,7 +22,7 @@ class Config {
         const val ORDER_KEY_TIME_DESC = "time_desc"
 
         // fragmentCode
-        const val FRAGMENT_CODE_MAIN = 0
+        const val FRAGMENT_CODE_ADD = 0
         const val FRAGMENT_CODE_EDIT = 1
     }
 }

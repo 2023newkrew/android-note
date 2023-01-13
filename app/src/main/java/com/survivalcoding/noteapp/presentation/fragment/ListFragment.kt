@@ -18,31 +18,27 @@ import kotlinx.coroutines.launch
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ListViewModel by viewModels {
-        ListViewModelFactory
-    }
+    private val viewModel: ListViewModel by viewModels { ListViewModelFactory }
     private lateinit var noteListAdapter: NoteListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
         setupMenu()
-        noteListAdapter = NoteListAdapter { position ->
-            onItemRemoveClick(position)
-        }
+
+        noteListAdapter = NoteListAdapter(::onItemRemoveClick)
         val recyclerView = binding.noteRecyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = noteListAdapter
 
         lifecycleScope.launch {
-            viewModel.getNotes().collect {
-                noteListAdapter.submitList(it)
-            }
+            viewModel.getNotes().collect(noteListAdapter::submitList)
         }
 
         return root
@@ -50,9 +46,7 @@ class ListFragment : Fragment() {
 
     private fun setupMenu() {
         binding.toolbar.addMenuProvider(object : MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-
-            }
+            override fun onPrepareMenu(menu: Menu) = Unit
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_main, menu)

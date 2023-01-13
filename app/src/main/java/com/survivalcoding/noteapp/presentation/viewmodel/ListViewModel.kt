@@ -9,7 +9,6 @@ import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
-import com.survivalcoding.noteapp.presentation.MainViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
