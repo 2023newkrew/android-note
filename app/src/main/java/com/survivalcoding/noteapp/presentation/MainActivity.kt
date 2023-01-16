@@ -15,9 +15,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.main_fragment_container, ListFragment())
-        fragmentTransaction.commit()
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.main_fragment_container, ListFragment())
+                .commit()
+        }
 
         binding.addFab.setOnClickListener {
             val intent = Intent(this, DetailActivity::class.java).apply {
