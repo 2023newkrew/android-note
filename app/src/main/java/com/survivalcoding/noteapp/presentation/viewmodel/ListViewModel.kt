@@ -22,6 +22,7 @@ import com.survivalcoding.noteapp.Config.Companion.PREFS_KEY_ORDER
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
+import com.survivalcoding.noteapp.presentation.event.UserEvent
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -137,10 +138,6 @@ class ListViewModel(
             ORDER_KEY_TIME_DESC -> Pair(ORDER_CODE_DATE, true)
             else -> Pair(ORDER_CODE_TITLE, false)
         }
-}
-
-sealed class UserEvent {
-    class ShowSnackBar(val message: String) : UserEvent()
 }
 
 data class ListState(

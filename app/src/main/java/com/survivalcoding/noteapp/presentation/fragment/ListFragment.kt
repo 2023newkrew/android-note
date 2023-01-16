@@ -21,9 +21,9 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentListBinding
 import com.survivalcoding.noteapp.presentation.DetailActivity
 import com.survivalcoding.noteapp.presentation.adapter.NoteListAdapter
+import com.survivalcoding.noteapp.presentation.event.UserEvent
 import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel
 import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel.Companion.ListViewModelFactory
-import com.survivalcoding.noteapp.presentation.viewmodel.UserEvent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

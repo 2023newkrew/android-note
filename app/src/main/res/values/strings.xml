@@ -19,4 +19,6 @@
     <string name="hint_content">Enter Some content</string>
 
     <string name="message_delete">Note Deleted</string>
+    <string name="message_empty_title">Title Empty</string>
+    <string name="message_empty_content">Content Empty</string>
 </resources>
