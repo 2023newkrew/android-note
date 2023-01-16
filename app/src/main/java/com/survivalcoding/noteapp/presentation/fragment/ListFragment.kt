@@ -16,7 +16,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.Config
 import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_FRAGMENT
 import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_NOTE
+import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_ADD
 import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_EDIT
+import com.survivalcoding.noteapp.Config.Companion.dualPane
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentListBinding
 import com.survivalcoding.noteapp.presentation.DetailActivity
@@ -145,6 +147,21 @@ class ListFragment : Fragment() {
                 )
             }
         }
+
+        if (dualPane) {
+            binding.addFab.setOnClickListener {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment_container, AddFragment())
+                    .commit()
+            }
+        } else {
+            binding.addFab.setOnClickListener {
+                val intent = Intent(context, DetailActivity::class.java).apply {
+                    putExtra(EXTRA_KEY_FRAGMENT, FRAGMENT_CODE_ADD)
+                }
+                startActivity(intent)
+            }
+        }
     }
 
     private fun setupMenu() {
@@ -177,10 +194,21 @@ class ListFragment : Fragment() {
     private fun onItemClick(position: Int) {
         val currentList = noteListAdapter.currentList.toMutableList()
         val note = currentList[position]
-        val intent = Intent(requireContext(), DetailActivity::class.java).apply {
-            putExtra(EXTRA_KEY_FRAGMENT, FRAGMENT_CODE_EDIT)
-            putExtra(EXTRA_KEY_NOTE, note)
+
+        if (dualPane) {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragment_container, EditFragment())
+                .commit()
+            requireActivity().intent.apply {
+                putExtra(EXTRA_KEY_FRAGMENT, FRAGMENT_CODE_EDIT)
+                putExtra(EXTRA_KEY_NOTE, note)
+            }
+        } else {
+            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+                putExtra(EXTRA_KEY_FRAGMENT, FRAGMENT_CODE_EDIT)
+                putExtra(EXTRA_KEY_NOTE, note)
+            }
+            startActivity(intent)
         }
-        startActivity(intent)
     }
 }

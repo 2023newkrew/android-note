@@ -9,18 +9,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment_container"
+        android:name="com.survivalcoding.noteapp.presentation.fragment.ListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/margin_default"
-        android:backgroundTint="@android:color/white"
-        android:contentDescription="@string/description_fab"
-        android:elevation="0dp"
-        android:src="@drawable/ic_add"
-        app:elevation="0dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,9 +1,11 @@
 package com.survivalcoding.noteapp.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,13 +18,15 @@ import com.survivalcoding.noteapp.Config.Companion.COLOR_CODE_PINK
 import com.survivalcoding.noteapp.Config.Companion.COLOR_CODE_PURPLE
 import com.survivalcoding.noteapp.Config.Companion.COLOR_CODE_RED
 import com.survivalcoding.noteapp.Config.Companion.COLOR_CODE_YELLOW
+import com.survivalcoding.noteapp.Config.Companion.dualPane
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentAddBinding
 import com.survivalcoding.noteapp.domain.model.Note
-import com.survivalcoding.noteapp.presentation.util.EditorUtil.Companion.checkEditTextsNotEmpty
+import com.survivalcoding.noteapp.presentation.util.EditorUtil
 import com.survivalcoding.noteapp.presentation.viewmodel.AddViewModel
 import com.survivalcoding.noteapp.presentation.viewmodel.AddViewModel.Companion.AddViewModelFactory
 import kotlinx.coroutines.launch
+
 
 class AddFragment : Fragment() {
     private var _binding: FragmentAddBinding? = null
@@ -35,7 +39,11 @@ class AddFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -61,7 +69,7 @@ class AddFragment : Fragment() {
             viewModel.changeColor(COLOR_CODE_PINK)
         }
         binding.includeEditor.saveFab.setOnClickListener {
-            val event = checkEditTextsNotEmpty(
+            val event = EditorUtil.checkEditTextsNotEmpty(
                 binding.includeEditor.titleEditText,
                 binding.includeEditor.contentEditText
             )
@@ -74,7 +82,19 @@ class AddFragment : Fragment() {
                         time = System.currentTimeMillis()
                     )
                 )
-                requireActivity().finish()
+
+                if (dualPane) {
+                    val imm: InputMethodManager =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+
+                    requireActivity().supportFragmentManager
+                        .beginTransaction()
+                        .remove(this)
+                        .commit()
+                } else {
+                    requireActivity().finish()
+                }
             } else {
                 val snackBar = Snackbar.make(
                     binding.includeEditor.layoutEditor,
@@ -84,72 +104,15 @@ class AddFragment : Fragment() {
                 snackBar.show()
             }
         }
-
-        return root
     }
 
     private fun selectColorButton(colorCode: Int) {
         when (colorCode) {
-            COLOR_CODE_RED -> {
-                binding.includeEditor.layoutEditor.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.note_red
-                    )
-                )
-                requireActivity().window.statusBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_red)
-                requireActivity().window.navigationBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_red)
-            }
-            COLOR_CODE_YELLOW -> {
-                binding.includeEditor.layoutEditor.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.note_yellow
-                    )
-                )
-                requireActivity().window.statusBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_yellow)
-                requireActivity().window.navigationBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_yellow)
-            }
-            COLOR_CODE_PURPLE -> {
-                binding.includeEditor.layoutEditor.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.note_purple
-                    )
-                )
-                requireActivity().window.statusBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_purple)
-                requireActivity().window.navigationBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_purple)
-            }
-            COLOR_CODE_BLUE -> {
-                binding.includeEditor.layoutEditor.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.note_blue
-                    )
-                )
-                requireActivity().window.statusBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_blue)
-                requireActivity().window.navigationBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_blue)
-            }
-            COLOR_CODE_PINK -> {
-                binding.includeEditor.layoutEditor.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.note_pink
-                    )
-                )
-                requireActivity().window.statusBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_pink)
-                requireActivity().window.navigationBarColor =
-                    ContextCompat.getColor(requireContext(), R.color.note_pink)
-            }
+            COLOR_CODE_RED -> changeThemeColor(R.color.note_red)
+            COLOR_CODE_YELLOW -> changeThemeColor(R.color.note_yellow)
+            COLOR_CODE_PURPLE -> changeThemeColor(R.color.note_purple)
+            COLOR_CODE_BLUE -> changeThemeColor(R.color.note_blue)
+            COLOR_CODE_PINK -> changeThemeColor(R.color.note_pink)
         }
 
         binding.includeEditor.colorButtonRed.setImageResource(
@@ -172,5 +135,20 @@ class AddFragment : Fragment() {
             if (colorCode == COLOR_CODE_PINK) R.drawable.drawable_circle_border
             else R.drawable.drawable_circle
         )
+    }
+
+    private fun changeThemeColor(colorResId: Int) {
+        binding.includeEditor.layoutEditor.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                colorResId
+            )
+        )
+        if (!dualPane) {
+            requireActivity().window.statusBarColor =
+                ContextCompat.getColor(requireContext(), colorResId)
+        }
+        requireActivity().window.navigationBarColor =
+            ContextCompat.getColor(requireContext(), colorResId)
     }
 }
