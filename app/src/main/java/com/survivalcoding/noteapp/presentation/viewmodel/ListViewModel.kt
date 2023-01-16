@@ -3,11 +3,7 @@ package com.survivalcoding.noteapp.presentation.viewmodel
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_COLOR
 import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_DATE
 import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_TITLE
@@ -23,26 +19,18 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
 import com.survivalcoding.noteapp.presentation.event.UserEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
+import javax.inject.Inject
 
-class ListViewModel(
+@HiltViewModel
+class ListViewModel @Inject constructor(
     private val application: Application,
     private val noteUseCaseBundle: NoteUseCaseBundle
 ) : ViewModel() {
-    companion object {
-        val ListViewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                val application = checkNotNull(extras[APPLICATION_KEY])
-                return ListViewModel(application, (application as App).noteUseCaseBundle) as T
-            }
-        }
-    }
+
 
     private val _state = MutableStateFlow(ListState())
     val state = _state.asStateFlow()

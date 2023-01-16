@@ -24,14 +24,14 @@ import com.survivalcoding.noteapp.databinding.FragmentAddBinding
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.presentation.util.EditorUtil
 import com.survivalcoding.noteapp.presentation.viewmodel.AddViewModel
-import com.survivalcoding.noteapp.presentation.viewmodel.AddViewModel.Companion.AddViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class AddFragment : Fragment() {
     private var _binding: FragmentAddBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AddViewModel by viewModels { AddViewModelFactory }
+    private val viewModel: AddViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

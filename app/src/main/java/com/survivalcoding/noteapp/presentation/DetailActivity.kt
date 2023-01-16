@@ -9,7 +9,9 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ActivityDetailBinding
 import com.survivalcoding.noteapp.presentation.fragment.AddFragment
 import com.survivalcoding.noteapp.presentation.fragment.EditFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
     private val binding: ActivityDetailBinding by lazy {
         ActivityDetailBinding.inflate(

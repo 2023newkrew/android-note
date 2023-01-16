@@ -5,8 +5,9 @@ import com.survivalcoding.noteapp.data.data_source.dao.NoteDao
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class NoteRepositoryImpl(private val noteDao: NoteDao) : NoteRepository {
+class NoteRepositoryImpl @Inject constructor(private val noteDao: NoteDao) : NoteRepository {
     @WorkerThread
     override fun getNotes(orderKey: String): Flow<List<Note>> {
         return noteDao.getNotes(orderKey)

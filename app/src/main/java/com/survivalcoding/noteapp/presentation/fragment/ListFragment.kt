@@ -25,15 +25,16 @@ import com.survivalcoding.noteapp.presentation.DetailActivity
 import com.survivalcoding.noteapp.presentation.adapter.NoteListAdapter
 import com.survivalcoding.noteapp.presentation.event.UserEvent
 import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel
-import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel.Companion.ListViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ListViewModel by viewModels { ListViewModelFactory }
+    private val viewModel: ListViewModel by viewModels()
     private lateinit var noteListAdapter: NoteListAdapter
 
     override fun onCreateView(

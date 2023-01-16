@@ -21,13 +21,14 @@ import com.survivalcoding.noteapp.databinding.FragmentEditBinding
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.presentation.util.EditorUtil
 import com.survivalcoding.noteapp.presentation.viewmodel.EditViewModel
-import com.survivalcoding.noteapp.presentation.viewmodel.EditViewModel.Companion.EditViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class EditFragment : Fragment() {
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: EditViewModel by viewModels { EditViewModelFactory }
+    private val viewModel: EditViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
