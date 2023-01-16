@@ -52,7 +52,7 @@ class ListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = noteListAdapter
 
-        lifecycleScope.launch{
+        lifecycleScope.launch {
             val orderCode = viewModel.convertOrderCodeToKey(
                 viewModel.state.value.orderCode,
                 viewModel.state.value.isReversed
@@ -106,11 +106,11 @@ class ListFragment : Fragment() {
         binding.radioGroupOrderReverse.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radio_ascending -> viewModel.changeOrder(
-                    viewModel.state.value.orderCode,
-                    false
+                    orderCode = viewModel.state.value.orderCode,
+                    isReversed = false
                 )
                 R.id.radio_descending -> viewModel.changeOrder(
-                    viewModel.state.value.orderCode,
+                    orderCode = viewModel.state.value.orderCode,
                     isReversed = true
                 )
             }
