@@ -147,8 +147,9 @@ class AddFragment : Fragment() {
         if (!dualPane) {
             requireActivity().window.statusBarColor =
                 ContextCompat.getColor(requireContext(), colorResId)
+            requireActivity().window.navigationBarColor =
+                ContextCompat.getColor(requireContext(), colorResId)
         }
-        requireActivity().window.navigationBarColor =
-            ContextCompat.getColor(requireContext(), colorResId)
+
     }
 }
