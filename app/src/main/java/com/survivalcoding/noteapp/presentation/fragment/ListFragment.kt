@@ -27,8 +27,6 @@ import com.survivalcoding.noteapp.presentation.viewmodel.UserEvent
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
@@ -174,7 +172,7 @@ class ListFragment : Fragment() {
         val note = currentList[position]
         val intent = Intent(requireContext(), DetailActivity::class.java).apply {
             putExtra(EXTRA_KEY_FRAGMENT, FRAGMENT_CODE_EDIT)
-            putExtra(EXTRA_KEY_NOTE, Json.encodeToString(note))
+            putExtra(EXTRA_KEY_NOTE, note)
         }
         startActivity(intent)
     }

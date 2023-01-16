@@ -64,7 +64,7 @@ class ListViewModel(
     fun getNotes(orderKey: String = ORDER_KEY_TITLE_ASC): Flow<List<Note>> =
         noteUseCaseBundle.getNotesUseCase(orderKey)
 
-    fun insertNote(note: Note) =
+    private fun insertNote(note: Note) =
         viewModelScope.launch {
             try {
                 noteUseCaseBundle.insertNoteUseCase(note)

@@ -1,5 +1,7 @@
 package com.survivalcoding.noteapp.presentation
 
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_FRAGMENT
@@ -11,9 +13,6 @@ import com.survivalcoding.noteapp.databinding.ActivityDetailBinding
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.presentation.fragment.AddFragment
 import com.survivalcoding.noteapp.presentation.fragment.EditFragment
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class DetailActivity : AppCompatActivity() {
     private val binding: ActivityDetailBinding by lazy {
@@ -33,10 +32,14 @@ class DetailActivity : AppCompatActivity() {
                     when (intent.getIntExtra(EXTRA_KEY_FRAGMENT, 0)) {
                         FRAGMENT_CODE_ADD -> AddFragment()
                         FRAGMENT_CODE_EDIT -> {
-                            val emptyNote = Json.encodeToString(Note())
-                            val note = Json.decodeFromString<Note>(
-                                intent.getStringExtra(EXTRA_KEY_NOTE) ?: emptyNote
-                            )
+                            val note: Note =
+                                // case version code T 33
+                                if (SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    intent.getParcelableExtra(EXTRA_KEY_NOTE, Note::class.java)
+                                } else {
+                                    intent.getParcelableExtra(EXTRA_KEY_NOTE)
+                                } ?: Note()
+
                             EditFragment(note)
                         }
                         else -> AddFragment()
