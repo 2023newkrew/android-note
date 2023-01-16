@@ -28,7 +28,9 @@ class AddViewModel(private val noteUseCaseBundle: NoteUseCaseBundle) : ViewModel
     private val _state = MutableStateFlow(AddState())
     val state = _state.asStateFlow()
 
-    fun saveNote(note: Note) = viewModelScope.launch { noteUseCaseBundle.insertNoteUseCase(note) }
+    fun saveNote(note: Note) = viewModelScope.launch {
+        noteUseCaseBundle.insertNoteUseCase(note)
+    }
 
     fun changeColor(colorCode: Int) {
         _state.value = state.value.copy(colorCode = colorCode)

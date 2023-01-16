@@ -1,5 +1,6 @@
 package com.survivalcoding.noteapp.presentation.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +19,7 @@ import com.survivalcoding.noteapp.presentation.viewmodel.EditViewModel
 import com.survivalcoding.noteapp.presentation.viewmodel.EditViewModel.Companion.EditViewModelFactory
 import kotlinx.coroutines.launch
 
-class EditFragment(val note: Note) : Fragment() {
+class EditFragment : Fragment() {
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
     private val viewModel: EditViewModel by viewModels { EditViewModelFactory }
@@ -29,7 +30,23 @@ class EditFragment(val note: Note) : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val note: Note =
+            // case version code T 33
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requireActivity().intent.getParcelableExtra(Config.EXTRA_KEY_NOTE, Note::class.java)
+            } else {
+                requireActivity().intent.getParcelableExtra(Config.EXTRA_KEY_NOTE)
+            } ?: Note()
+
+        binding.includeEditor.titleEditText.setText(note.title)
+        binding.includeEditor.contentEditText.setText(note.content)
+        viewModel.changeColor(note.colorCode)
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -55,16 +72,6 @@ class EditFragment(val note: Note) : Fragment() {
             )
             requireActivity().finish()
         }
-
-        return root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // restore
-        binding.includeEditor.titleEditText.setText(note.title)
-        binding.includeEditor.contentEditText.setText(note.content)
-        viewModel.changeColor(note.colorCode)
     }
 
     private fun selectColorButton(colorCode: Int) {
