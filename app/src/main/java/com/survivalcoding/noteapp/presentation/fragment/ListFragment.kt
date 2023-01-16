@@ -54,6 +54,7 @@ class ListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = noteListAdapter
 
+        // db
         lifecycleScope.launch {
             val orderCode = viewModel.convertOrderCodeToKey(
                 viewModel.state.value.orderCode,
@@ -62,6 +63,7 @@ class ListFragment : Fragment() {
             viewModel.getNotes(orderCode).collect(noteListAdapter::submitList)
         }
 
+        // sort
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
@@ -69,11 +71,16 @@ class ListFragment : Fragment() {
                         state.orderCode,
                         state.isReversed
                     )
-                    noteListAdapter.submitList(viewModel.getNotes(orderCode).first())
+
+                    val recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
+                    noteListAdapter.submitList(viewModel.getNotes(orderCode).first()) {
+                        recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
+                    }
                 }
             }
         }
 
+        // user event
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
