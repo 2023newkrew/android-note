@@ -15,7 +15,10 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ItemNoteBinding
 import com.survivalcoding.noteapp.domain.model.Note
 
-class NoteListAdapter : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
+class NoteListAdapter(
+    private val onNoteClick: (Int) -> Unit,
+    private val onNoteDelete: (Int) -> Unit
+) : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) {
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<Note>() {
             override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
@@ -28,11 +31,24 @@ class NoteListAdapter : ListAdapter<Note, NoteListAdapter.ViewHolder>(diffUtil) 
         }
     }
 
-    class ViewHolder(val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(
+        val onNoteClick: (Int) -> Unit,
+        val onNoteDelete: (Int) -> Unit,
+        val binding: ItemNoteBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                onNoteClick(adapterPosition)
+            }
+            binding.deleteImageView.setOnClickListener {
+                onNoteDelete(adapterPosition)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
-        return ViewHolder(ItemNoteBinding.bind(view))
+        return ViewHolder(onNoteClick, onNoteDelete, ItemNoteBinding.bind(view))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

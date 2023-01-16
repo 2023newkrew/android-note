@@ -3,7 +3,12 @@
     <dimen name="text_size_default">14sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
 
+    <dimen name="margin_minus">-8dp</dimen>
+    <dimen name="margin_tiny">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">12dp</dimen>
     <dimen name="margin_default">16dp</dimen>
     <dimen name="margin_large">32dp</dimen>
+
+    <dimen name="color_button_size_default">50dp</dimen>
 </resources>
