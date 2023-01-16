@@ -13,6 +13,7 @@
     <string name="color">Color</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+    <string name="exception">Exception Occurs</string>
 
     <string name="hint_title">Enter title…</string>
     <string name="hint_content">Enter Some content</string>

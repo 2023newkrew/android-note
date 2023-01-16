@@ -13,18 +13,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.survivalcoding.noteapp.Config
 import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_FRAGMENT
 import com.survivalcoding.noteapp.Config.Companion.EXTRA_KEY_NOTE
 import com.survivalcoding.noteapp.Config.Companion.FRAGMENT_CODE_EDIT
-import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_COLOR
-import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_DATE
-import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_TITLE
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentListBinding
 import com.survivalcoding.noteapp.presentation.DetailActivity
 import com.survivalcoding.noteapp.presentation.adapter.NoteListAdapter
 import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel
 import com.survivalcoding.noteapp.presentation.viewmodel.ListViewModel.Companion.ListViewModelFactory
+import com.survivalcoding.noteapp.presentation.viewmodel.UserEvent
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -42,7 +42,11 @@ class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupMenu()
 
@@ -72,11 +76,32 @@ class ListFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collectLatest { event ->
+                    when (event) {
+                        is UserEvent.ShowSnackBar -> {
+                            val snackBar = Snackbar.make(
+                                binding.root,
+                                event.message,
+                                Snackbar.LENGTH_SHORT
+                            )
+
+                            if (event.message == getString(R.string.message_delete)) {
+                                snackBar.setAction(R.string.undo) { viewModel.restoreNote() }
+                            }
+                            snackBar.show()
+                        }
+                    }
+                }
+            }
+        }
+
         binding.radioGroupOrderKey.check(
             when (viewModel.state.value.orderCode) {
-                ORDER_CODE_TITLE -> R.id.radio_title
-                ORDER_CODE_DATE -> R.id.radio_date
-                ORDER_CODE_COLOR -> R.id.radio_color
+                Config.ORDER_CODE_TITLE -> R.id.radio_title
+                Config.ORDER_CODE_DATE -> R.id.radio_date
+                Config.ORDER_CODE_COLOR -> R.id.radio_color
                 else -> R.id.radio_title
             }
         )
@@ -90,15 +115,15 @@ class ListFragment : Fragment() {
         binding.radioGroupOrderKey.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radio_title -> viewModel.changeOrder(
-                    ORDER_CODE_TITLE,
+                    Config.ORDER_CODE_TITLE,
                     viewModel.state.value.isReversed
                 )
                 R.id.radio_date -> viewModel.changeOrder(
-                    ORDER_CODE_DATE,
+                    Config.ORDER_CODE_DATE,
                     viewModel.state.value.isReversed
                 )
                 R.id.radio_color -> viewModel.changeOrder(
-                    ORDER_CODE_COLOR,
+                    Config.ORDER_CODE_COLOR,
                     viewModel.state.value.isReversed
                 )
             }
@@ -115,8 +140,6 @@ class ListFragment : Fragment() {
                 )
             }
         }
-
-        return root
     }
 
     private fun setupMenu() {
@@ -144,10 +167,6 @@ class ListFragment : Fragment() {
         val currentList = noteListAdapter.currentList.toMutableList()
         val note = currentList[position]
         viewModel.deleteNote(note)
-
-        val snackBar = Snackbar.make(binding.root, R.string.message_delete, Snackbar.LENGTH_SHORT)
-        snackBar.setAction(R.string.undo) { viewModel.insertNode(note) }
-        snackBar.show()
     }
 
     private fun onItemClick(position: Int) {

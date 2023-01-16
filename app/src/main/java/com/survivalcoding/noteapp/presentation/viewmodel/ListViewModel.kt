@@ -19,10 +19,12 @@ import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_DESC
 import com.survivalcoding.noteapp.Config.Companion.PREFS
 import com.survivalcoding.noteapp.Config.Companion.PREFS_KEY_ORDER
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ListViewModel(
     private val application: Application,
@@ -44,6 +46,11 @@ class ListViewModel(
     private val _state = MutableStateFlow(ListState())
     val state = _state.asStateFlow()
 
+    private val _event = MutableSharedFlow<UserEvent>()
+    val event = _event.asSharedFlow()
+
+    private var backupNote: Note? = null
+
     init {
         val prefs = application.getSharedPreferences(PREFS, MODE_PRIVATE)
         val orderKey = prefs.getString(PREFS_KEY_ORDER, ORDER_KEY_TITLE_ASC)
@@ -57,10 +64,40 @@ class ListViewModel(
     fun getNotes(orderKey: String = ORDER_KEY_TITLE_ASC): Flow<List<Note>> =
         noteUseCaseBundle.getNotesUseCase(orderKey)
 
-    fun insertNode(note: Note) = viewModelScope.launch { noteUseCaseBundle.insertNoteUseCase(note) }
+    fun insertNote(note: Note) =
+        viewModelScope.launch {
+            try {
+                noteUseCaseBundle.insertNoteUseCase(note)
+            } catch (exception: IOException) {
+                _event.emit(
+                    UserEvent.ShowSnackBar(
+                        exception.message ?: application.getString(R.string.exception)
+                    )
+                )
+            }
+        }
 
     fun deleteNote(note: Note) =
-        viewModelScope.launch { noteUseCaseBundle.deleteNotesUseCase(note) }
+        viewModelScope.launch {
+            try {
+                noteUseCaseBundle.deleteNotesUseCase(note)
+                backupNote = note
+                _event.emit(
+                    UserEvent.ShowSnackBar(
+                        application.getString(R.string.message_delete)
+                    )
+                )
+            } catch (exception: IOException) {
+                _event.emit(
+                    UserEvent.ShowSnackBar(
+                        exception.message ?: application.getString(R.string.exception)
+                    )
+                )
+            }
+        }
+
+    fun restoreNote() = backupNote?.let { insertNote(backupNote as Note) }
+
 
     fun changeOrder(orderCode: Int, isReversed: Boolean) {
         val editor = application.getSharedPreferences(PREFS, MODE_PRIVATE).edit()
@@ -90,7 +127,7 @@ class ListViewModel(
             }
         }
 
-    fun convertOrderKeyToOrderPair(orderKey: String): Pair<Int, Boolean> =
+    private fun convertOrderKeyToOrderPair(orderKey: String): Pair<Int, Boolean> =
         when (orderKey) {
             ORDER_KEY_TITLE_ASC -> Pair(ORDER_CODE_TITLE, false)
             ORDER_KEY_TITLE_DESC -> Pair(ORDER_CODE_TITLE, true)
@@ -100,6 +137,10 @@ class ListViewModel(
             ORDER_KEY_TIME_DESC -> Pair(ORDER_CODE_DATE, true)
             else -> Pair(ORDER_CODE_TITLE, false)
         }
+}
+
+sealed class UserEvent {
+    class ShowSnackBar(val message: String) : UserEvent()
 }
 
 data class ListState(
