@@ -77,7 +77,7 @@ class AddFragment : Fragment() {
                 requireActivity().finish()
             } else {
                 val snackBar = Snackbar.make(
-                    binding.root,
+                    binding.includeEditor.layoutEditor,
                     event.message,
                     Snackbar.LENGTH_SHORT
                 )
