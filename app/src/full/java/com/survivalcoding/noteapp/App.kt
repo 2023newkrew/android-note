@@ -14,7 +14,8 @@ class App : Application() {
     private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
-            NoteDatabase::class.java, NoteDatabase.DATABASE_NAME
+            NoteDatabase::class.java,
+            "dddd",
         ).build()
     }
 
