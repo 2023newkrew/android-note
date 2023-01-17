@@ -3,11 +3,7 @@ package com.survivalcoding.noteapp.presentation.viewmodel
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_COLOR
 import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_DATE
 import com.survivalcoding.noteapp.Config.Companion.ORDER_CODE_TITLE
@@ -19,30 +15,30 @@ import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_ASC
 import com.survivalcoding.noteapp.Config.Companion.ORDER_KEY_TITLE_DESC
 import com.survivalcoding.noteapp.Config.Companion.PREFS
 import com.survivalcoding.noteapp.Config.Companion.PREFS_KEY_ORDER
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.use_case.bundle.NoteUseCaseBundle
+import com.survivalcoding.noteapp.presentation.event.UserEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.IOException
+import javax.inject.Inject
 
-class ListViewModel(
+@HiltViewModel
+class ListViewModel @Inject constructor(
     private val application: Application,
     private val noteUseCaseBundle: NoteUseCaseBundle
 ) : ViewModel() {
-    companion object {
-        val ListViewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                val application = checkNotNull(extras[APPLICATION_KEY])
-                return ListViewModel(application, (application as App).noteUseCaseBundle) as T
-            }
-        }
-    }
+
 
     private val _state = MutableStateFlow(ListState())
     val state = _state.asStateFlow()
+
+    private val _event = MutableSharedFlow<UserEvent>()
+    val event = _event.asSharedFlow()
+
+    private var backupNote: Note? = null
 
     init {
         val prefs = application.getSharedPreferences(PREFS, MODE_PRIVATE)
@@ -57,10 +53,40 @@ class ListViewModel(
     fun getNotes(orderKey: String = ORDER_KEY_TITLE_ASC): Flow<List<Note>> =
         noteUseCaseBundle.getNotesUseCase(orderKey)
 
-    fun insertNode(note: Note) = viewModelScope.launch { noteUseCaseBundle.insertNoteUseCase(note) }
+    private fun insertNote(note: Note) =
+        viewModelScope.launch {
+            try {
+                noteUseCaseBundle.insertNoteUseCase(note)
+            } catch (exception: IOException) {
+                _event.emit(
+                    UserEvent.ShowSnackBar(
+                        exception.message ?: application.getString(R.string.exception)
+                    )
+                )
+            }
+        }
 
     fun deleteNote(note: Note) =
-        viewModelScope.launch { noteUseCaseBundle.deleteNotesUseCase(note) }
+        viewModelScope.launch {
+            try {
+                noteUseCaseBundle.deleteNotesUseCase(note)
+                backupNote = note
+                _event.emit(
+                    UserEvent.ShowSnackBar(
+                        application.getString(R.string.message_delete)
+                    )
+                )
+            } catch (exception: IOException) {
+                _event.emit(
+                    UserEvent.ShowSnackBar(
+                        exception.message ?: application.getString(R.string.exception)
+                    )
+                )
+            }
+        }
+
+    fun restoreNote() = backupNote?.let { insertNote(backupNote as Note) }
+
 
     fun changeOrder(orderCode: Int, isReversed: Boolean) {
         val editor = application.getSharedPreferences(PREFS, MODE_PRIVATE).edit()
@@ -90,7 +116,7 @@ class ListViewModel(
             }
         }
 
-    fun convertOrderKeyToOrderPair(orderKey: String): Pair<Int, Boolean> =
+    private fun convertOrderKeyToOrderPair(orderKey: String): Pair<Int, Boolean> =
         when (orderKey) {
             ORDER_KEY_TITLE_ASC -> Pair(ORDER_CODE_TITLE, false)
             ORDER_KEY_TITLE_DESC -> Pair(ORDER_CODE_TITLE, true)

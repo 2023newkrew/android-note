@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,86 +7,102 @@
     android:background="@color/black"
     tools:context=".presentation.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name"
-        app:titleTextColor="@color/white" />
+        android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/layout_radio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_small"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-        <RadioGroup
-            android:id="@+id/radio_group_order_key"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_minus"
-            android:layout_marginBottom="@dimen/margin_minus"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/white" />
 
-            <RadioButton
-                android:id="@+id/radio_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/title"
-                android:textColor="@color/white" />
-
-            <RadioButton
-                android:id="@+id/radio_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/date"
-                android:textColor="@color/white" />
-
-            <RadioButton
-                android:id="@+id/radio_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/color"
-                android:textColor="@color/white" />
-        </RadioGroup>
-
-        <RadioGroup
-            android:id="@+id/radio_group_order_reverse"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_radio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_minus"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_small"
+            android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-            <RadioButton
-                android:id="@+id/radio_ascending"
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/radio_group_order_key"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/ascending"
-                android:textColor="@color/white" />
+                android:layout_marginTop="@dimen/margin_minus"
+                android:layout_marginBottom="@dimen/margin_minus"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-            <RadioButton
-                android:id="@+id/radio_descending"
-                android:layout_width="wrap_content"
+                <RadioButton
+                    android:id="@+id/radio_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/title"
+                    android:textColor="@color/white" />
+
+                <RadioButton
+                    android:id="@+id/radio_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date"
+                    android:textColor="@color/white" />
+
+                <RadioButton
+                    android:id="@+id/radio_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/color"
+                    android:textColor="@color/white" />
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/radio_group_order_reverse"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/descending"
-                android:textColor="@color/white" />
-        </RadioGroup>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+                android:layout_marginTop="@dimen/margin_minus"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/note_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_radio" />
+                <RadioButton
+                    android:id="@+id/radio_ascending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/ascending"
+                    android:textColor="@color/white" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <RadioButton
+                    android:id="@+id/radio_descending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/descending"
+                    android:textColor="@color/white" />
+            </RadioGroup>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/note_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_radio" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/margin_default"
+        android:backgroundTint="@android:color/white"
+        android:contentDescription="@string/description_fab"
+        android:elevation="0dp"
+        android:src="@drawable/ic_add"
+        app:elevation="0dp" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

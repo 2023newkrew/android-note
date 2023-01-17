@@ -2,6 +2,9 @@ package com.survivalcoding.noteapp
 
 class Config {
     companion object {
+        // dual pane
+        var dualPane: Boolean = false
+
         // room
         const val DATABASE_NAME = "note_db"
         const val TABLE_NAME = "note_table"

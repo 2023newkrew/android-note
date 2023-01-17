@@ -13,9 +13,12 @@
     <string name="color">Color</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+    <string name="exception">Exception Occurs</string>
 
     <string name="hint_title">Enter title…</string>
     <string name="hint_content">Enter Some content</string>
 
     <string name="message_delete">Note Deleted</string>
+    <string name="message_empty_title">Title Empty</string>
+    <string name="message_empty_content">Content Empty</string>
 </resources>
