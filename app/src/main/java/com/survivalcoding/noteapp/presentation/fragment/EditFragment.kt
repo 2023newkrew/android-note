@@ -52,7 +52,9 @@ class EditFragment : Fragment() {
 
         binding.includeEditor.titleEditText.setText(note.title)
         binding.includeEditor.contentEditText.setText(note.content)
-        viewModel.changeColor(note.colorCode)
+
+        if (savedInstanceState == null) viewModel.changeColor(note.colorCode)
+        else selectColorButton(viewModel.state.value.colorCode)
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -159,6 +161,5 @@ class EditFragment : Fragment() {
             requireActivity().window.navigationBarColor =
                 ContextCompat.getColor(requireContext(), colorResId)
         }
-
     }
 }
